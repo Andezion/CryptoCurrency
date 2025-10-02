@@ -16,6 +16,8 @@ public:
     MyFrame(const wxString& title);
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+    void OnSize(wxSizeEvent& event);
+    void OnButtonOK(wxCommandEvent& event);
 private:
     DECLARE_EVENT_TABLE()
 };
@@ -32,8 +34,10 @@ bool MyApp::OnInit()
 }
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
-EVT_MENU(wxID_ABOUT, MyFrame::OnAbout)
-EVT_MENU(wxID_EXIT, MyFrame::OnQuit)
+    EVT_MENU(wxID_ABOUT, MyFrame::OnAbout)
+    EVT_MENU(wxID_EXIT, MyFrame::OnQuit)
+    EVT_SIZE ( MyFrame::OnSize)
+    EVT_BUTTON (wxID_OK, MyFrame::OnButtonOK)
 END_EVENT_TABLE()
 
 void MyFrame::OnAbout(wxCommandEvent& event)
@@ -44,6 +48,13 @@ void MyFrame::OnAbout(wxCommandEvent& event)
     wxMessageBox(msg, wxT("About Minimal"),
     wxOK | wxICON_INFORMATION, this);
 }
+
+void MyFrame::OnButtonOK(wxCommandEvent &event)
+{
+    auto *button = new wxButton(this, wxID_OK, wxT("OK"),
+                    wxPoint(200, 200));
+}
+
 void MyFrame::OnQuit(wxCommandEvent& event)
 {
     Close();
