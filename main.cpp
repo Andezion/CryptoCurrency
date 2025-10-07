@@ -15,6 +15,7 @@ int main() {
     const std::string apiKey = "9ff0c523-4d02-4bd0-9a03-91c44aa2bcf2";
     const std::string url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1&convert=UAH";
     const std::string byc_url = "https://pro-api.coinmarketcap.com/v1/blockchain/statistics/latest";
+    const std::string url_2 = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/historical";
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     if(CURL* curl = curl_easy_init()) {
@@ -56,6 +57,28 @@ int main() {
                 std::cout << j2.dump(2) << "\n";
             } catch (std::exception& e) {
                 std::cerr << "Ошибка парсинга JSON (blockchain): " << e.what() << std::endl;
+            }
+        }
+
+        readBuffer.clear();
+
+        curl_easy_setopt(curl, CURLOPT_URL, url_2.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+
+        if (CURLcode res = curl_easy_perform(curl); res != CURLE_OK) {
+            std::cerr << "Ошибка curl (cryptocurrency stats): " << curl_easy_strerror(res) << std::endl;
+        }
+        else
+        {
+            try
+            {
+                json j2 = json::parse(readBuffer);
+                std::cout << "\nИсторические данные:\n";
+                std::cout << j2.dump(0) << "\n";
+            }
+            catch (std::exception& e)
+            {
+                std::cerr << "Ошибка парсинга JSON (cryptocurrency): " << e.what() << std::endl;
             }
         }
 
